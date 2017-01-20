@@ -11,6 +11,8 @@ containing Divs based on the position of the layers. It recreates the image with
 
 Optionaly, some custom CSS can be applied to the divs, and to the *:hover* state of the divs.
 
+If a layer is named anything*@an_url*, i.e. includes an "@" followed by some url, a link to this url will be auto generated.
+
 ![Screenshot](screenshot.png)
 
 ## Install
