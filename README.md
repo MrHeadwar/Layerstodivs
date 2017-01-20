@@ -17,7 +17,7 @@ If a layer is named anything*@an_url*, i.e. includes an "@" followed by some url
 
 ## Install
 
-To install, see https://en.wikibooks.org/wiki/GIMP/Installing_Plugins#Copying_the_plugin_to_the_GIMP_plugin_directory 
+To install, see [the WikiBook](https://en.wikibooks.org/wiki/GIMP/Installing_Plugins#Copying_the_plugin_to_the_GIMP_plugin_directory). 
 
 ## License
 
