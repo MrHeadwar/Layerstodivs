@@ -6,7 +6,7 @@
 #
 # Version 1.0
 #
-# Author: Lars Pontoppidan <leverpostej@gmail.com>
+# Authors: Lars Pontoppidan <leverpostej@gmail.com>, headwar
 # Copyright (C) 2012 Lars Pontoppidan
 #
 # This program is free software: you can redistribute it and/or modify
@@ -33,8 +33,7 @@ def dump(obj):
 def dbg(message):
 	print message
 
-
-def export_layers(img, draw, path, visibility, filetype, css, csshover):
+def export_layers(img, draw, path, visibility, filetype, css, csshover, backlayer):
 
 	def traverse(layer,options):
 		vis = options['visibility']
@@ -56,35 +55,52 @@ def export_layers(img, draw, path, visibility, filetype, css, csshover):
 	for layer in img.layers:
 		traverse(layer,options)
 
+	# create the html file
 	f = open(path+"/myhtml.html", "w");
-	f.write("<!doctype html>\n<html>\n\t<head>\n\t\t<style>\n\t\t\t.container { position:relative; }\n\t\t\t.hoverimg { position: absolute; border: none; "+css+" }\n\t\t\t.hoverimg:hover{ "+csshover+" }\n\t\t</style>\n\t</head>\n\n\t<body>\n\t\t<div class=\"container\">\n")
+	f.write("<!doctype html>\n<html>\n\t<head>\n\t\t<style>\n\t\t\t.container { position:relative; }\n\t\t\t.backimg { position: absolute; border: none; }\n\t\t\t.hoverimg { position: absolute; border: none; "+css+" }\n\t\t\t.hoverimg:hover{ "+csshover+" }\n\t\t</style>\n\t</head>\n\n\t<body>\n\t\t<div class=\"container\">\n")
 
-	for layer in layers:
+	filetypes = [".png",".jpg",".gif"]
+	filenames = []
+
+	for layer in layers[::-1]:
 		filename = ""
 		name = pdb.gimp_item_get_name(layer)
-
+		# if an @ is in the layer name, the part after the @ char is the link
 		if "@" in name:
 			layernameurl = name.split("@")
-			filename = layernameurl[0]+filetype
+			filename = layernameurl[0]
 			linkname = layernameurl[1]
 		else:
-			filename = name+filetype
+			filename = name
 			linkname = ""
-
+		# for the images filenames, remove all non alphanum + .-_ chars
+		filename= re.sub(r'[^.-_a-zA-Z0-9]', '', filename)
+		# avoid duplicate filenames
+		while filename in filenames:
+			filename=filename+'0'
+		filenames.append(filename)
+		# add the file type
+		filename=filename+filetypes[filetype]
 		pathfilename = path+"/"+filename
+		f.write("\t\t\t")
+		# if there is a link in the layer name :
 		if linkname:
-			f.write("\t\t\t<a href=\""+linkname+"\" alt=\""+name+"\">")
-		else:
-			f.write("\t\t\t")
-		f.write("<div class=\"hoverimg\" style=\"left: "+str(layer.offsets[0])+
+			f.write("<a href=\""+linkname+"\" alt=\""+name+"\">")
+		myclass = "hoverimg"
+		# if the last layer (hence now the first, as the 'for' is in reverse order) is a background :
+		if backlayer:
+			myclass = "backimg"
+			backlayer = 0
+
+		f.write("<div class=\""+myclass+"\" style=\"left: "+str(layer.offsets[0])+
 			"px; top: "+str(layer.offsets[1])+"px; width: "+str(layer.width)+
 			"px; height: "+str(layer.height)+"px; background-image: url('"+filename+"');\"></div>")
-		if linkname:
-			f.write("</a>\n")
-		else:
-			f.write("\n")
 
-		dbg("Saving: '"+pathfilename+"'")
+		# if there is a link in the layer name :
+		if linkname:
+			f.write("</a>")
+		f.write("\n")
+
 		pdb.gimp_file_save(img, layer, pathfilename, pathfilename)
 
 	f.write("\t\t</div>\n\t</body>\n</html>\n")
@@ -102,10 +118,11 @@ register(
 		(PF_IMAGE, "img", "Input image", None),
         (PF_DRAWABLE, "draw", "Input drawable", None),
 		(PF_DIRNAME, "path", "Output directory", expanduser("~")),
-        (PF_OPTION, "visibility", "Visibility", 1, ("All", "Visible", "Invisible")),
-        (PF_STRING, "filetype", "File type", ".png"),
+        (PF_OPTION, "visibility", "Visibility", 1, ["All", "Visible", "Invisible"]),
+        (PF_OPTION, "filetype", "File type", 0, [".png",".jpg",".gif"]),
 		(PF_STRING, "css", "Custom CSS", ""),
 		(PF_STRING, "csshover", "Custom CSS on hover", "z-index:100; box-shadow: 0 0 16px 10px yellow;"),
+		(PF_TOGGLE, "backlayer", "The lowest layer is a background", 1)
 	],
 	[],
 	export_layers,
