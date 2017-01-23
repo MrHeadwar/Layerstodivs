@@ -85,7 +85,7 @@ def export_layers(img, draw, path, visibility, filetype, css, csshover, backlaye
 		f.write("\t\t\t")
 		# if there is a link in the layer name :
 		if linkname:
-			f.write("<a href=\""+linkname+"\" alt=\""+name+"\">")
+			f.write("<a href=\""+linkname+"\" alt=\""+cgi.escape(name).encode("ascii", "xmlcharrefreplace")+"\">")
 		myclass = "hoverimg"
 		# if the last layer (hence now the first, as the 'for' is in reverse order) is a background :
 		if backlayer:
