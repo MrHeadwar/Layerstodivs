@@ -24,7 +24,7 @@
 #
 
 from gimpfu import *
-import os, re
+import os, re, cgi
 from os.path import expanduser
 
 def dump(obj):
@@ -63,18 +63,18 @@ def export_layers(img, draw, path, visibility, filetype, css, csshover, backlaye
 	filenames = []
 
 	for layer in layers[::-1]:
-		filename = ""
+		nicename = ""
 		name = pdb.gimp_item_get_name(layer)
 		# if an @ is in the layer name, the part after the @ char is the link
 		if "@" in name:
 			layernameurl = name.split("@")
-			filename = layernameurl[0]
+			nicename = layernameurl[0]
 			linkname = layernameurl[1]
 		else:
-			filename = name
+			nicename = name
 			linkname = ""
 		# for the images filenames, remove all non alphanum + .-_ chars
-		filename= re.sub(r'[^.-_a-zA-Z0-9]', '', filename)
+		filename= re.sub(r'[^.-_a-zA-Z0-9]', '', nicename)
 		# avoid duplicate filenames
 		while filename in filenames:
 			filename=filename+'0'
@@ -85,7 +85,7 @@ def export_layers(img, draw, path, visibility, filetype, css, csshover, backlaye
 		f.write("\t\t\t")
 		# if there is a link in the layer name :
 		if linkname:
-			f.write("<a href=\""+linkname+"\" alt=\""+cgi.escape(name).encode("ascii", "xmlcharrefreplace")+"\">")
+			f.write("<a href=\""+linkname+"\" alt=\""+cgi.escape(nicename).encode("ascii", "xmlcharrefreplace")+"\">")
 		myclass = "hoverimg"
 		# if the last layer (hence now the first, as the 'for' is in reverse order) is a background :
 		if backlayer:
