@@ -57,7 +57,10 @@ def export_layers(img, draw, path, visibility, filetype, css, csshover, backlaye
 
 	# create the html file
 	f = open(path+"/myhtml.html", "w");
-	f.write("<!doctype html>\n<html>\n\t<head>\n\t\t<style>\n\t\t\t.container { position:relative; }\n\t\t\t.backimg { position: absolute; border: none; }\n\t\t\t.hoverimg { position: absolute; border: none; "+css+" }\n\t\t\t.hoverimg:hover{ "+csshover+" }\n\t\t</style>\n\t</head>\n\n\t<body>\n\t\t<div class=\"container\">\n")
+	f.write("<!doctype html>\n<html>\n\t<head>\n\t\t<style>\n\t\t\t.container { position:relative; }\n\t\t\t.hoverimg { position: absolute; border: none; "+css+" }\n\t\t\t.hoverimg:hover{ "+csshover+" }\n\t\t</style>\n\t</head>\n\n\t<body>\n")
+
+	if not backlayer:
+		f.write("\t\t<div class=\"container\">\n");
 
 	filetypes = [".png",".jpg",".gif"]
 	filenames = []
@@ -82,21 +85,26 @@ def export_layers(img, draw, path, visibility, filetype, css, csshover, backlaye
 		# add the file type
 		filename=filename+filetypes[filetype]
 		pathfilename = path+"/"+filename
-		f.write("\t\t\t")
-		# if there is a link in the layer name :
+		# if the last layer (hence now the first, as the 'for' is in reverse order) is a background:
+		if backlayer:
+			myclass = "container"
+			f.write("\t\t")
+		else:
+			myclass = "hoverimg"
+			f.write("\t\t\t")
+		# if there is a link in the layer name:
 		if linkname:
 			f.write("<a href=\""+linkname+"\" alt=\""+cgi.escape(nicename).encode("ascii", "xmlcharrefreplace")+"\">")
-		myclass = "hoverimg"
-		# if the last layer (hence now the first, as the 'for' is in reverse order) is a background :
-		if backlayer:
-			myclass = "backimg"
-			backlayer = 0
-
+		# now, create the div with absolute positionning:
 		f.write("<div class=\""+myclass+"\" style=\"left: "+str(layer.offsets[0])+
 			"px; top: "+str(layer.offsets[1])+"px; width: "+str(layer.width)+
-			"px; height: "+str(layer.height)+"px; background-image: url('"+filename+"');\"></div>")
+			"px; height: "+str(layer.height)+"px; background-image: url('"+filename+"');\">")
+		if backlayer:
+			backlayer = 0
+		else:
+			f.write("</div>")
 
-		# if there is a link in the layer name :
+		# if there is a link in the layer name:
 		if linkname:
 			f.write("</a>")
 		f.write("\n")
@@ -111,7 +119,7 @@ register(
 	"Script to export separate layers to CSS blocks",
 	"Lars Pontoppidan, Headwar",
 	"Lars Pontoppidan, Headwar",
-	"2012, 2016",
+	"2012, 2017",
 	"E_xport layers to CSS...",
 	"*",
 	[
