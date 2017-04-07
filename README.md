@@ -2,12 +2,14 @@
 
 ## Description
 
-Gimp plugin to create html divs from gimp layers
+Gimp plugin to create html divs from gimp layers.
 
-Based on Lars Pontoppidan's Export Layers (https://github.com/Larpon/gimp-plug-ins)
+Based on Lars Pontoppidan's Export Layers (https://github.com/Larpon/gimp-plug-ins).
 
 This plugin for Gimp is used to export each layer to its own image file, and generate an HTML file 
 containing Divs based on the position of the layers. It recreates the image with div blocks.
+
+An exemple of the result can be seen in [Ardour's manual](http://manual.ardour.org/ardours-interface/about/).
 
 Optionnaly, some custom CSS can be applied to the divs, and to the *:hover* state of the divs. Also, the lowest layer can optionnaly be considered a background, with no *:hover* effect.
 
