@@ -33,7 +33,7 @@ def dump(obj):
 def dbg(message):
 	print message
 
-def export_layers(img, draw, path, visibility, filetype, css, csshover, backlayer):
+def export_layers(img, draw, path, visibility, filetype, css, csshover, dataattr, backlayer):
 
 	def traverse(layer,options):
 		vis = options['visibility']
@@ -96,9 +96,19 @@ def export_layers(img, draw, path, visibility, filetype, css, csshover, backlaye
 		if linkname:
 			f.write("<a href=\""+linkname+"\" alt=\""+cgi.escape(nicename).encode("ascii", "xmlcharrefreplace")+"\">")
 		# now, create the div with absolute positionning:
-		f.write("<div class=\""+myclass+"\" style=\"left: "+str(layer.offsets[0])+
-			"px; top: "+str(layer.offsets[1])+"px; width: "+str(layer.width)+
-			"px; height: "+str(layer.height)+"px; background-image: url('"+filename+"');\">")
+		div_line = ""
+		div_line += "<div "
+		div_line += "class=\"" + myclass + "\" "
+		div_line += "style=\"left: "+str(layer.offsets[0]) + "px; top: "+str(layer.offsets[1])+"px; width: "+str(layer.width) + "px; height: "+str(layer.height)+"px; background-image: url('"+filename+"');\" "
+		if dataattr:
+			div_line += "data-layer-name=\"" + nicename + "\" "
+		div_line += ">"
+
+		f.write(div_line)
+
+		# f.write("<div class=\""+myclass+"\" style=\"left: "+str(layer.offsets[0])+
+		# 	"px; top: "+str(layer.offsets[1])+"px; width: "+str(layer.width)+
+		# 	"px; height: "+str(layer.height)+"px; background-image: url('"+filename+"');\">")
 		if backlayer:
 			backlayer = 0
 		else:
@@ -130,6 +140,7 @@ register(
         (PF_OPTION, "filetype", "File type", 0, [".png",".jpg",".gif"]),
 		(PF_STRING, "css", "Custom CSS", ""),
 		(PF_STRING, "csshover", "Custom CSS on hover", "z-index:100; box-shadow: 0 0 16px 10px yellow;"),
+		(PF_BOOL, "dataattr", "Include layer name as data attr", True),
 		(PF_TOGGLE, "backlayer", "The lowest layer is a background", 1)
 	],
 	[],
@@ -138,3 +149,4 @@ register(
 )
 
 main()
+
