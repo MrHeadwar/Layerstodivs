@@ -13,7 +13,7 @@ An example of the result can be seen in [Ardour's manual](http://manual.ardour.o
 
 ## Features
  - Insert custom CSS styles inline in the divs
- - Customize :hover state
+ - Customize `:hover` state
  - Set lowest layer as a background
  - Include the layer name as data-layer-name
 
