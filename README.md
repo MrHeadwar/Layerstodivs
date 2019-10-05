@@ -9,17 +9,33 @@ Based on Lars Pontoppidan's Export Layers (https://github.com/Larpon/gimp-plug-i
 This plugin for Gimp is used to export each layer to its own image file, and generate an HTML file 
 containing Divs based on the position of the layers. It recreates the image with div blocks.
 
-An exemple of the result can be seen in [Ardour's manual](http://manual.ardour.org/ardours-interface/about/).
+An example of the result can be seen in [Ardour's manual](http://manual.ardour.org/ardours-interface/about/).
 
-Optionnaly, some custom CSS can be applied to the divs, and to the *:hover* state of the divs. Also, the lowest layer can optionnaly be considered a background, with no *:hover* effect.
+## Features
+ - Insert custom CSS styles inline in the divs
+ - Customize `:hover` state
+ - Set lowest layer as a background
+ - Include the layer name as data-layer-name
 
-If a layer is named anything*@an_url*, i.e. includes an "@" followed by some url, a link to this url will be auto generated for the div.
+## Usage
+If you would like your layer's div to act as a hyperlink, include the target
+URL after an @ symbol. For example, a GIMP layer named:
 
-![Screenshot](screenshot.png)
+`Big Box@https://asdf.com/`
 
-## Install
+
+Would encapsulate the div for that layer in an `<a>` tag
+
+| Screenshots|  |
+| ------------- | ------------- |
+| ![Screenshot](screenshot2.png)  | ![Screenshot](screenshot.png)  |
+| Puts itself into the *file* dialog  | The dialog for export options |
+## Installation
 
 To install, see [the WikiBook](https://en.wikibooks.org/wiki/GIMP/Installing_Plugins#Copying_the_plugin_to_the_GIMP_plugin_directory). 
+
+Linux:
+Put `layerstodiv.py` in `~/.gimp-2.8/plug-ins/` and add execution priviledges to the file.
 
 ## License
 
